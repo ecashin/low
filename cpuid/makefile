@@ -1,5 +1,7 @@
 OBJ = subs.o main.o
 CFLAGS = -Wall -g
+# use elf64 for Linux
+TARGET = macho64
 
 testt: t
 	./t
@@ -15,7 +17,7 @@ subs.o: subs.asm
 main.o: main.c
 
 %.o: %.asm
-	nasm -fmacho64 $<
+	nasm -f$(TARGET) $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<

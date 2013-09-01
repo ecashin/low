@@ -1,1 +1,4 @@
 Mac OS X only with new nasm from ports
+
+Remove underscore prefix from function name in subs.asm and use
+"-felf64" for Linux x86_64.
