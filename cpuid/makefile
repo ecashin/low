@@ -3,6 +3,10 @@ CFLAGS = -Wall -g
 # use elf64 for Linux
 TARGET = macho64
 
+ifeq ($(TARGET), macho64)
+NASM_FLAGS += -Dcpuid=_cpuid
+endif
+
 testt: t
 	./t
 
@@ -17,7 +21,7 @@ subs.o: subs.asm
 main.o: main.c
 
 %.o: %.asm
-	nasm -f$(TARGET) $<
+	nasm $(NASM_FLAGS) -f$(TARGET) $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
