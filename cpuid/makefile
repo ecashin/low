@@ -4,7 +4,7 @@ CFLAGS = -Wall -g
 TARGET = macho64
 
 ifeq ($(TARGET), macho64)
-NASM_FLAGS += -Dcpuid=_cpuid
+NASM_FLAGS += -Dcpuidfn=_cpuidfn
 endif
 
 testt: t

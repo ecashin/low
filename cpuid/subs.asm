@@ -1,8 +1,8 @@
 
 section .text
-	global cpuid
+	global cpuidfn
 
-cpuid:
+cpuidfn:
 	push rbp
         mov rbp, rsp
         mov rax, rdi

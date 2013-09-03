@@ -39,7 +39,7 @@ char *features[] = {
 	"RDRAND",
 };
 
-extern int cpuid(int);
+extern unsigned int cpuidfn(unsigned int);
 
 void prfeature(unsigned int cpuid, int i)
 {
@@ -52,7 +52,7 @@ int main(void)
 {
 	int i;
 
-	unsigned long n = (unsigned long) cpuid(1);
+	unsigned long n = (unsigned long) cpuidfn(1);
 	printf("%016lx\n", n);
 	printf("sse4.1: %s\n", (n >> CPUID_SSE41_BIT & 1) ? "yes" : "no");
 	printf("sse4.2: %s\n", (n >> CPUID_SSE42_BIT & 1) ? "yes" : "no");
