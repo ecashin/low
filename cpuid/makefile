@@ -1,9 +1,9 @@
 OBJ = subs.o main.o
 CFLAGS = -Wall -g
-# use elf64 for Linux
+ifeq ($(shell uname),Linux)
+TARGET = elf64
+else
 TARGET = macho64
-
-ifeq ($(TARGET), macho64)
 NASM_FLAGS += -Dcpuidfn=_cpuidfn
 endif
 
