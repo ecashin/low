@@ -7,6 +7,6 @@ cpuidfn:
         mov rbp, rsp
         mov rax, rdi
         cpuid
-	mov rcx, rax
+	mov rax, rcx
         leave
         ret
