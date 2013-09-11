@@ -19,10 +19,10 @@ int main(void)
 	float a = 0.1;
 	float b = 0.2;
 	unsigned char bcda[10] = {
-		4, 0, /* (standard says 0 is repeated) */
+		9<<4|9, 0, /* 99 (standard says 0 is repeated) */
 	};
 	unsigned char bcdb[10] = {
-		8, 0,
+		1, 1, 0,	/* 101 */
 	};
 	long double aa = 0.1, bb = 0.2;
 
