@@ -1,0 +1,50 @@
+Binary Coded Decimal on x86_64
+
+So I hear that banking and finance still use BCD, which would explain
+why Intel bothers making it work even on x86_64.  There are a bunch of
+BCD-related instructions that don't work in 64-bit mode, though.  They
+work with little registers like AX and AL.
+
+  AAA
+  AAD
+  AAM
+  AAS
+  DAA
+  DAS
+
+The way you do BCD in 64-bit mode is to use BCD only as a memory
+storage format.  The computation happens in double extended-precision
+floating point in the 80-bit registers of the x87 FPU, which won't
+lose data compared to BCD, so 1/10 can be represented exactly.
+
+To go from in-memory BCD to the double extended-precision FPU
+registers, you use FBLD, pushing a value from 10 bytes (called "tword"
+in NASM but assumed for FBLD) of BCD in memory onto the FPU register
+stack and implicitly converting it to double extended-precision
+floating point.
+
+To go the other way, the FBSTP instruction pops the FPU register stack
+and converts the top value to BCD, storing it in the tword at the
+address specified by the operand.
+
+Side note: Long Doubles in C
+
+I heard on Stack Overflow that using long doubles in C results in
+Intel double extended-precision (80-bit) floating point numeric data
+types being used, so main adds two long doubles and we can use
+"-save-temps" to see what gcc does with that. This isn't BCD at all
+but also uses the FPU for double extended-precision floating
+point.  GCC-generated assembly from my Intel-CPU Mac is below.
+
+	movss	-52(%rbp), %xmm0	; move scalar single-precision
+	addss	-56(%rbp), %xmm0	; add scalar single-precision
+
+	;; Convert Scalar Single-Precision FP to Scalar Double-Precision FP
+	cvtss2sd	%xmm0, %xmm0
+	cvtss2sd	-56(%rbp), %xmm1
+	cvtss2sd	-52(%rbp), %xmm3
+
+	;; Move Aligned Packed Double-Precision Floating-Point Values
+	movapd	%xmm0, %xmm2
+	movapd	%xmm3, %xmm0
+
