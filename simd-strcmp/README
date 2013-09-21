@@ -14,12 +14,12 @@ The demo runs like this:
   cc -Wall -g  -c main.c
   cc  -o diffidx  subs.o main.o 
   [ecashin@marino simd-strcmp]$ ./diffidx        
-  "0123456789abcdef" and "01c3456789abCdef" differ at byte 2
+  "0123456789abcdef" and "01c3456789abCdef" differ at byte index 2
   [ecashin@marino simd-strcmp]$ ./diffidx abc abC
-  "abc" and "abC" differ at byte 2
+  "abc" and "abC" differ at byte index 2
   [ecashin@marino simd-strcmp]$ ./diffidx abc aBc
-  "abc" and "aBc" differ at byte 1
+  "abc" and "aBc" differ at byte index 1
   [ecashin@marino simd-strcmp]$ ./diffidx abc abc
-  "abc" and "abc" differ at byte 16
+  "abc" and "abc" differ at byte index 16
   [ecashin@marino simd-strcmp]$ 
 

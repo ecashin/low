@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 		loadstr(a, argv[1], sizeof a - 1);
 	if (argc > 2)
 		loadstr(b, argv[2], sizeof b - 1);
-	printf("\"%s\" and \"%s\" differ at byte %lu\n",
+	printf("\"%s\" and \"%s\" differ at byte index %lu\n",
 	       a, b, diffidx(a, b, sizeof a - 1));
 
 	return 0;
