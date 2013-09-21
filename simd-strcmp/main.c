@@ -33,15 +33,8 @@ int main(int argc, char *argv[])
 	}
 	assert(sizeof a == 2*sizeof(unsigned long) + 1 && sizeof a == sizeof b);
 
-	/* static data demo */
-	if (argc == 1)
-		printf("\"%s\" and \"%s\" differ at byte %lu\n",
-		       a, b, diffidx(a, b, sizeof a - 1));
-
-	/* optional dynamic data demo */
-	if (argc < 2)
-		return 0;
-	loadstr(a, argv[1], sizeof a - 1);
+	if (argc > 1)
+		loadstr(a, argv[1], sizeof a - 1);
 	if (argc > 2)
 		loadstr(b, argv[2], sizeof b - 1);
 	printf("\"%s\" and \"%s\" differ at byte %lu\n",
