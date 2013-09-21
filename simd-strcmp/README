@@ -1,0 +1,25 @@
+The PCMPESTRI instruction is really complex.  The immediate value in
+the third operand is like a panel of switches controlling the way the
+instruction executes, with the bits in the value determining the
+switch settings.
+
+Using 24 as the third operand asks PCMPESTRI to compare the strings
+packed into operands one and two byte by byte and then put the index
+of the first differing byte into RCX.
+
+The demo runs like this:
+
+  [ecashin@marino simd-strcmp]$ make
+  nasm  -felf64 subs.s
+  cc -Wall -g  -c main.c
+  cc  -o diffidx  subs.o main.o 
+  [ecashin@marino simd-strcmp]$ ./diffidx        
+  "0123456789abcdef" and "01c3456789abCdef" differ at byte 2
+  [ecashin@marino simd-strcmp]$ ./diffidx abc abC
+  "abc" and "abC" differ at byte 2
+  [ecashin@marino simd-strcmp]$ ./diffidx abc aBc
+  "abc" and "aBc" differ at byte 1
+  [ecashin@marino simd-strcmp]$ ./diffidx abc abc
+  "abc" and "abc" differ at byte 16
+  [ecashin@marino simd-strcmp]$ 
+
