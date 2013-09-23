@@ -1,0 +1,2 @@
+The CLZ instruction counts the number of leading zeros in the
+register.
