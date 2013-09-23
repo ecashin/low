@@ -1,0 +1,6 @@
+My target platform for ARM is a Raspberry Pi.
+
+Initial attempts to use NASM were a little frustrating, with nasm
+indicating difficulty recognizing the instructions I would expect it
+to, like LDR.  For now, I'm just using as, and it doesn't even seem as
+awful to use as it is on x86.
