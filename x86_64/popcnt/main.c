@@ -3,9 +3,6 @@
 #include <assert.h>
 #include "subs.h"
 
-#define CPUID_POPCNT_BIT (23)
-#define CPUID_SSE4_2_BIT (20)
-
 static inline int ifloor(int n, int d)
 {
 	n /= d;
@@ -44,13 +41,12 @@ int main(void)
 {
 	int i;
 	unsigned j;
-	unsigned long n = (unsigned long) cpuidfn(1);
+	unsigned long n;
 	unsigned long m;
 	uint16_t a[10000];
 	unsigned char *p;
 
-	if ((n >> CPUID_SSE4_2_BIT & 1) == 0 ||
-	    (n >> CPUID_POPCNT_BIT & 1) == 0) {
+	if (!canpopcnt()) {
 		fprintf(stderr, "no POPCNT support in CPU\n");
 		return 1;
 	}

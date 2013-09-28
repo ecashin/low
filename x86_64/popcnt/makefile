@@ -4,7 +4,7 @@ ifeq ($(shell uname),Linux)
 TARGET = elf64
 else
 TARGET = macho64
-NASM_FLAGS += -Dcpuidfn=_cpuidfn -Dcountbits=_countbits
+NASM_FLAGS += -Dcanpopcnt=_canpopcnt -Dcountbits=_countbits
 endif
 
 t: $(OBJ)
