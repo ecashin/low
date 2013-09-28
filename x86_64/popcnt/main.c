@@ -26,11 +26,12 @@ static inline int cntbits(uint16_t *a, size_t n)
 {
 	int b = 0;
 	unsigned char *p = (unsigned char *) a;
-	unsigned char *e = &p[n];
+	unsigned char *e;
 	const int blksiz = 8; /* call countbits with 64-bit "blocks" */
 
-	for (; ((unsigned long) p) % blksiz; ++p) /* until aligned */
+	for (; n > 0 && ((unsigned long) p) % blksiz; ++p, --n) /* until aligned */
 		b += cbchar(*p);
+	e = &p[n];
 	n = ifloor(e - p, blksiz);
 	b += countbits((uint16_t *) p, n); /* this is the fast part */
 	for (p += n; p < e; ++p)
@@ -53,6 +54,8 @@ int main(void)
 		fprintf(stderr, "no POPCNT support in CPU\n");
 		return 1;
 	}
+
+	/* (counting manually here for verification of cntbits) */
 	for (i = 0, n = 0; i < sizeof a / sizeof a[0]; ++i) {
 		j = a[i] = i + 1;
 		while (j) {
@@ -63,16 +66,25 @@ int main(void)
 	printf("initialized array with total of %lu bits set\n", n);
 
 	m = n;
+	printf("countbits with %lu bits set ... ", n);
+	fflush(stdout);
 	n = cntbits(a, sizeof a); /* note byte count in 2nd param */
 	assert(n == m);
-	printf("countbits reports %lu bits set\n", n);
+	puts("ok.");
 
 	/* test without first and last byte */
 	p = (unsigned char *) a;
-	m = n - cbchar(p[0]) - cbchar(*(p + sizeof a - 1));
+	m = n - cbchar(p[0]) - cbchar(p[(sizeof a) - 1]);
+	printf("countbits on unaligned sub-array with %lu bits set ... ", m);
+	fflush(stdout);
 	n = cntbits((uint16_t *)(p+1), (sizeof a) - 2);
 	assert(n == m);
-	printf("countbits on unaligned sub-array reports %lu bits set\n", n);
+	puts("ok.");
+
+	fputs("zero-length input ... ", stdout);
+	fflush(stdout);
+	assert(cntbits(a, 0) == 0); /* test boundary case, too */
+	puts("ok.");
 
 	return 0;
 }
