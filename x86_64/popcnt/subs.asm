@@ -6,16 +6,15 @@ section .text
 countbits:
 	push rbp
 	mov rbp, rsp
-	mov rcx, rdi	; rcx will hold address
+	mov rcx, rsi	; rcx is the count ...
+	shr rcx, 3	; ... of quadwords remaining to examine.
 	mov rdx, 0	; rdx is bit count
+	jrcxz .end	; don't start the loop if count is zero
 .loop:
-	cmp rsi, 0
-	je .end
-	popcnt rbx, [rcx]
+	popcnt rbx, [rdi]	; rdi is still the source address
 	add rdx, rbx
-	add rcx, 8
-	add esi, -8
-	jmp .loop
+	add rdi, 8
+	loop .loop		; decrement rcx, goto .loop if non-zero
 .end:
 	mov rax, rdx
 	leave
