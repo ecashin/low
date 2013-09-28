@@ -55,9 +55,10 @@ int main(void)
 		return 1;
 	}
 
-	/* (counting manually here for verification of cntbits) */
+	/* initialize a while counting here for later verification of cntbits */
 	for (i = 0, n = 0; i < sizeof a / sizeof a[0]; ++i) {
-		j = a[i] = i + 1;
+		j = i + 1;
+		a[i] = j;
 		while (j) {
 			n += j & 1;
 			j >>= 1;
