@@ -33,7 +33,6 @@ canpopcnt:
         mov rbp, rsp
         mov rax, rdi
         cpuid
-	xor rax, rax
 	mov rax, CPUID_SSE4_2_BIT
 	or rax, CPUID_POPCNT_BIT
 	and rcx, rax		; clear bits in rcx other than those of interest
