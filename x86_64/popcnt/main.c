@@ -39,7 +39,7 @@ static inline int cntbits(uint16_t *a, size_t n)
 	return b;
 }
 
-/* demo sets up data and runs a test two ways, checking correctness */
+/* demo sets up data and runs simple tests, checking correctness */
 int main(void)
 {
 	int i;

@@ -1,3 +1,8 @@
+;;; Try out the popcnt instruction
+;;; and provide cpuid so they can see whether the CPU supports it.
+;;; 
+;;; The caller is responsible for aligning data and providing a
+;;; byte count that's evenly divisible by 8.
 
 section .text
 	global cpuidfn
