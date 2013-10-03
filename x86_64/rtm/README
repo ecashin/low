@@ -1,0 +1,5 @@
+Intel's RTM (Restricted Transactional Memory) support adds XBEGIN and
+XEND instructions for entering and leaving atomic blocks of code.
+There are also XTEST and XABORT instructions.
+
+The feature is called TSX.
