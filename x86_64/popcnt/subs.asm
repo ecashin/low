@@ -31,7 +31,7 @@ countbits:
 canpopcnt:
 	push rbp
         mov rbp, rsp
-        mov rax, rdi
+        mov rax, 1
         cpuid
 	mov rax, CPUID_SSE4_2_BIT
 	or rax, CPUID_POPCNT_BIT
