@@ -10,6 +10,7 @@ extern unsigned long rtm(void);
 int main(void)
 {
 	printf("%lu\n", rtminit());
+	printf("%lu\n", rtm());
 
 	return 0;
 }
