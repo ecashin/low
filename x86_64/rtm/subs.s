@@ -29,11 +29,13 @@ rtminit:
         mov rax, 1
         cpuid
 	mov rax, CPUID_EBX_RTM_BIT
-	test rax, rbx
-	;; now i am going to be obnoxious and avoid a jz
-	pushfq			; thanks, x86_64 red zone!
-	mov rax, [rbp-8]
- 	and rax, EFLAGS_ZF_BIT
+	mov rcx, 1
+	and rax, rbx
+	test rax, rax
+	cmovz rax, rcx
+	mov rcx, 0
+	cmovnz rax, rcx
+	;; store result for later
 	mov rbx, badinit
 	mov [rbx], rax
         leave
