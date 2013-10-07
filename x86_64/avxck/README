@@ -1,0 +1,6 @@
+PXOR comes in a variety of sizes, with support introduced with various
+Intel feature sets, culminating with AVX2 for 256-bit exclusive OR for
+VPXOR.  I was interested in the latter, but I don't have any machines
+with AVX at the moment.
+
+So this demo only tests for the feature.  It doesn't use it.
