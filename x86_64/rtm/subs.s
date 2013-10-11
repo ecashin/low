@@ -9,32 +9,58 @@ section .data
 badinit:
 	dq 1
 
+abortcnt:
+	dq 0
+
 section .text
-	global rtm
+	global rtmxbegin
+	global rtmxend
 	global rtminit
+	global rtmabortcnt
+
+rtmxabort:
+	mov rax, abortcnt
+	lock inc qword [rax]
+	mov rax, [rax]
+	leave
+	ret
+
+rtmabortcnt:
+	push rbp
+	mov rbp, rsp
+	mov rax, abortcnt
+	mov rax, [rax]
+	leave
+	ret
 
 ;;; args in rdi, rsi, rdx
-rtm:
+rtmxbegin:
 	push rbp
         mov rbp, rsp
-	mov rbx, badinit
-	mov rax, [rbx]
+	xbegin rtmxabort
         leave
         ret
+
+rtmxend:
+	push rbp
+	mov rbp, rsp
+	xend
+	leave
+	ret
 
 ;;; return 0 if we're OK for RTM; non-zero otherwise
 rtminit:
 	push rbp
         mov rbp, rsp
-        mov rax, 1
+	mov rax, 7
         cpuid
 	mov rax, CPUID_EBX_RTM_BIT
-	mov rcx, 1
 	and rax, rbx
-	test rax, rax
-	cmovz rax, rcx
+	mov rcx, 1
+	cmp rax, 0
+	cmove rax, rcx
 	mov rcx, 0
-	cmovnz rax, rcx
+	cmovne rax, rcx
 	;; store result for later
 	mov rbx, badinit
 	mov [rbx], rax

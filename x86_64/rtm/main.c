@@ -5,12 +5,24 @@
 #include <string.h>
 
 extern unsigned long rtminit(void);
-extern unsigned long rtm(void);
+extern unsigned long rtmxbegin(void);
+extern unsigned long rtmxend(void);
+extern unsigned long rtmabortcnt(void);
 
 int main(void)
 {
-	printf("%lu\n", rtminit());
-	printf("%lu\n", rtm());
+	unsigned long ret;
+
+	ret = rtminit();
+	printf("rtminit:%lu\n", ret);
+	if (ret)
+		return 1;
+	ret = rtmabortcnt();
+	printf("rtmabortcnt:%lu\n", ret);
+	rtmxbegin();
+	puts("begun");
+	rtmxend();
+	puts("ended");
 
 	return 0;
 }

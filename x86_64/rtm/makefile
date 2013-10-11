@@ -6,7 +6,8 @@ ifeq ($(shell uname),Linux)
 TARGET = elf64
 else
 TARGET = macho64
-NASM_FLAGS += -D$(PROG)=_$(PROG) -Drtm=_rtm -Drtminit=_rtminit
+NASM_FLAGS += $(shell for i in `grep '^[a-z][0-9a-z]*:' *.s | sed 's!:!!'`; do echo '-D'$$i'=_'$$i; done)
+# -D$(PROG)=_$(PROG) -Drtm=_rtm -Drtminit=_rtminit
 endif
 
 .PHONY: testt
