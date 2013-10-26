@@ -3,19 +3,30 @@
 #include <pthread.h>
 #include <stdint.h>
 
+enum {
+	MUTEX,
+	LKADD,
+};
+
 static uint32_t count;
 static pthread_mutex_t mutex;
 static long int niters;
+static int type = MUTEX;
 
 static void *
 dowork(void *data)
 {
 	int i;
 
-	for (i = 0; i < niters; ++i) {
-		pthread_mutex_lock(&mutex);
-		count++;
-		pthread_mutex_unlock(&mutex);
+	switch (type) {
+	case MUTEX:
+	default:
+		for (i = 0; i < niters; ++i) {
+			pthread_mutex_lock(&mutex);
+			count++;
+			pthread_mutex_unlock(&mutex);
+		}
+		break;
 	}
 
 	return data;
