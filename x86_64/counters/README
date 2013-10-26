@@ -1,0 +1,16 @@
+This is going to be a place for microbenchmarking counters that, once
+read, are assumed to be possibly stale, but which were accurate at
+some point in the past.
+
+Mechanisms for testing:
+
+  * mutex-coordinated increment of shared counter
+
+  * lock prefix on add instruction (atomic increment) of shared
+    counter
+
+  * atomic increment of non-shared counters
+
+  * regular increment of non-shared counters
+
+
