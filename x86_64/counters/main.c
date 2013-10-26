@@ -7,11 +7,10 @@ enum {
 	MUTEX,
 	LKADD,
 };
-
+static int type;
 static uint32_t count;
 static pthread_mutex_t mutex;
 static long int niters;
-static int type = MUTEX;
 
 static void *
 dowork(void *data)
@@ -19,6 +18,12 @@ dowork(void *data)
 	int i;
 
 	switch (type) {
+	case LKADD:
+		for (i = 0; i < niters; ++i)
+			asm volatile("lock; addq $1, %0"
+				     : "=m" (count)
+				     : "m" (count));
+		break;
 	case MUTEX:
 	default:
 		for (i = 0; i < niters; ++i) {
@@ -52,7 +57,16 @@ int main(int argc, char *argv[])
 		if (end == argv[2])
 			exit(EXIT_FAILURE);
 	}
-	printf("%ld threads for %ld iterations\n", n, niters);
+
+	type = MUTEX;
+	if (argc > 3) {
+		type = (int) strtol(argv[3], &end, 0);
+		if (end == argv[3])
+			exit(EXIT_FAILURE);
+	}
+
+	printf("%ld threads for %ld iterations, test type %d\n",
+	       n, niters, type);
 	if (pthread_mutex_init(&mutex, NULL)) {
 		perror("pthread_mutex_init");
 		exit(EXIT_FAILURE);
@@ -73,5 +87,10 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 	pthread_mutex_destroy(&mutex);
+
+	printf("%s: resulting count is %lu\n",
+	       (n * niters) == count ? "OK" : "WRONG",
+	       (unsigned long) count);
+
 	return 0;
 }
