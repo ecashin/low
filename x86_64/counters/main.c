@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 	pthread_mutex_destroy(&mutex);
+	free(a);
 
 	printf("%s: resulting count is %lu\n",
 	       (n * niters) == count ? "OK" : "WRONG",
