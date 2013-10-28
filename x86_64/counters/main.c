@@ -18,6 +18,7 @@ enum {
 	MUTEX,			/* use pthread mutex and shared counter */
 	LKADDSH,		/* locked add on shared counter */
 	LKADDNO,		/* locked add on non-shared counter */
+	ADDNO,			/* non-locked add on non-shared counter */
 };
 static int type;
 static uint32_t count;
@@ -42,6 +43,10 @@ dowork(void *data)
 			asm volatile("lock; addq $1, %0"
 				     : "=m" (ti->t.count)
 				     : "m" (ti->t.count));
+		break;
+	case ADDNO:
+		for (i = 0; i < niters; ++i)
+			ti->t.count += 1;
 		break;
 	case MUTEX:
 	default:
@@ -105,7 +110,7 @@ int main(int argc, char *argv[])
 			perror("pthead_join");
 			exit(EXIT_FAILURE);
 		}
-		if (type == LKADDNO)
+		if (type == LKADDNO || type == ADDNO)
 			count += a[i].t.count;
 	}
 	pthread_mutex_destroy(&mutex);

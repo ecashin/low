@@ -13,4 +13,33 @@ Mechanisms for testing:
 
   * regular increment of non-shared counters
 
+Quick Results:
 
+  -*- mode: compilation; default-directory: "~/git/low/x86_64/counters/" -*-
+  Compilation started at Sun Oct 27 21:05:53
+  
+  make 
+  cc -g -Wall -o demo main.c -lpthread
+  time sh -c './demo 10 400000 3; echo $?'
+  10 threads for 400000 iterations, test type 3
+  OK: resulting count is 4000000
+  0
+          0.02 real         0.01 user         0.00 sys
+  time sh -c './demo 10 400000 2; echo $?'
+  10 threads for 400000 iterations, test type 2
+  OK: resulting count is 4000000
+  0
+          0.04 real         0.07 user         0.00 sys
+  time sh -c './demo 10 400000 1; echo $?'
+  10 threads for 400000 iterations, test type 1
+  OK: resulting count is 4000000
+  0
+          0.08 real         0.14 user         0.00 sys
+  time sh -c './demo 10 400000; echo $?'
+  10 threads for 400000 iterations, test type 0
+  OK: resulting count is 4000000
+  0
+         18.21 real         5.32 user        16.76 sys
+  
+  Compilation finished at Sun Oct 27 21:06:12
+  
