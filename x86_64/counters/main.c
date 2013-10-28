@@ -3,9 +3,21 @@
 #include <pthread.h>
 #include <stdint.h>
 
+struct perthread {
+	pthread_t tinfo;
+	uint32_t count;
+};
+struct tinfo {		/* per-thread data with padding */
+	union {
+		struct perthread t;
+		char pad[64];
+	};
+};
+
 enum {
-	MUTEX,
-	LKADD,
+	MUTEX,			/* use pthread mutex and shared counter */
+	LKADDSH,		/* locked add on shared counter */
+	LKADDNO,		/* locked add on non-shared counter */
 };
 static int type;
 static uint32_t count;
@@ -16,13 +28,20 @@ static void *
 dowork(void *data)
 {
 	int i;
+	struct tinfo *ti = (struct tinfo *) data;
 
 	switch (type) {
-	case LKADD:
+	case LKADDSH:
 		for (i = 0; i < niters; ++i)
 			asm volatile("lock; addq $1, %0"
 				     : "=m" (count)
 				     : "m" (count));
+		break;
+	case LKADDNO:
+		for (i = 0; i < niters; ++i)
+			asm volatile("lock; addq $1, %0"
+				     : "=m" (ti->t.count)
+				     : "m" (ti->t.count));
 		break;
 	case MUTEX:
 	default:
@@ -39,7 +58,7 @@ dowork(void *data)
 
 int main(int argc, char *argv[])
 {
-	pthread_t *a;
+	struct tinfo *a;
 	long int n;
 	int i;
 	char *end;
@@ -77,15 +96,18 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < n; ++i)
-		if (pthread_create(&a[i], NULL, dowork, &a[i])) {
+		if (pthread_create(&a[i].t.tinfo, NULL, dowork, &a[i])) {
 			perror("pthread_create");
 			exit(EXIT_FAILURE);
 		}
-	for (i = 0; i < n; ++i)
-		if (pthread_join(a[i], NULL)) {
+	for (i = 0; i < n; ++i) {
+		if (pthread_join(a[i].t.tinfo, NULL)) {
 			perror("pthead_join");
 			exit(EXIT_FAILURE);
 		}
+		if (type == LKADDNO)
+			count += a[i].t.count;
+	}
 	pthread_mutex_destroy(&mutex);
 	free(a);
 
