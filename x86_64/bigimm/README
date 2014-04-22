@@ -1,2 +1,2 @@
-The morale of the story: Don't try to use immediate values above 2^32,
+The moral of the story: Don't try to use immediate values above 2^32,
 even in 64-bit assembler.
