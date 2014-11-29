@@ -13,6 +13,7 @@
  * warnings or something for these subtleties.
  */
 #include <algorithm>
+#include <array>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -68,14 +69,16 @@ std::function<void (int)> factory_bad(int init)
     return [&](int m) { cout << n + m << endl; }; // captures n by ref
 }
 
+// Just overwrite the stack with some stuff, so that
+// we can tell if garbage is being used.
 int erase(int n)
 {
-    char buf[1024];
-    char *p = buf, *end = p + sizeof buf;
+    array<char, 1024> buf;
+    char *p;
 
-    for (; p < end; ++p)
+    for (p = buf.begin(); p != buf.end(); ++p)
 	*p = n++;
-    return buf[sizeof buf - 1];
+    return n;
 }
 
 int main(void)
